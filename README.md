@@ -1,2 +1,0 @@
-# PerfumeriaPereira
-Pagina Perfumeria Pereira
