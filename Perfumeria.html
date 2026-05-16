@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maison Olfactiiiiiiiiiiiif — Perfumería de Autor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+
+  <style>
+    :root {
+      --gold: #c9a96e;
+      --gold-light: #dfc28e; /* ✅ FIX: variable definida */
+      --bg: #0e0c0a;
+      --bg-card: #13110e;
+      --text: #e8e0d0;
+      --text-dim: rgba(232,224,208,0.6);
+      --border: rgba(201,169,110,0.2);
+      --transition: all 0.3s ease;
+      --whatsapp: #25d366;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Jost', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+    /* HEADER */
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.25rem 2rem; border-bottom: 0.5px solid var(--border);
+      position: sticky; top: 0; background: rgba(14, 12, 10, 0.95);
+      backdrop-filter: blur(10px); z-index: 100;
+    }
+    .logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; letter-spacing: 0.3em; color: var(--gold); text-decoration: none; text-transform: uppercase; }
+    .cart-btn { background: none; border: 0.5px solid var(--border); color: var(--gold); padding: 8px 16px; cursor: pointer; display: flex; gap: 8px; align-items: center; text-transform: uppercase; font-size: 12px; letter-spacing: 0.1em; transition: var(--transition); }
+    .cart-btn:hover { border-color: var(--gold); background: rgba(201,169,110,0.05); }
+
+    /* HERO */
+    .hero { text-align: center; padding: 5rem 2rem 3rem; max-width: 800px; margin: 0 auto; }
+    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 8vw, 64px); font-weight: 300; line-height: 1.1; margin-bottom: 1rem; }
+    .hero h1 em { font-style: italic; color: var(--gold); }
+
+    /* FILTERS */
+    .filters { display: flex; justify-content: center; gap: 12px; margin-bottom: 3rem; flex-wrap: wrap; }
+    .filter-btn { background: none; border: 0.5px solid var(--border); color: var(--text-dim); padding: 8px 20px; cursor: pointer; transition: var(--transition); text-transform: uppercase; font-size: 11px; letter-spacing: 0.1em; }
+    .filter-btn.active, .filter-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,169,110,0.1); }
+
+    /* GRID */
+    .section { padding: 0 2rem 4rem; max-width: 1400px; margin: 0 auto; }
+    .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 2rem; }
+
+    /* SKELETON LOADER */
+    .skeleton { background: var(--bg-card); border: 0.5px solid rgba(232,224,208,0.1); }
+    .skeleton-img { width: 100%; aspect-ratio: 1/1.2; background: linear-gradient(90deg, #1a1714 25%, #221e1a 50%, #1a1714 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    .skeleton-text { height: 12px; background: linear-gradient(90deg, #1a1714 25%, #221e1a 50%, #1a1714 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; margin: 1.5rem 1.5rem 0.5rem; border-radius: 2px; }
+    .skeleton-text.wide { width: 70%; }
+    .skeleton-text.short { width: 40%; margin-bottom: 1.5rem; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* PRODUCT CARD */
+    .product-card { background: var(--bg-card); border: 0.5px solid rgba(232,224,208,0.1); transition: var(--transition); position: relative; }
+    .product-card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    .product-img { width: 100%; aspect-ratio: 1/1.2; background: #1a1714; display: flex; align-items: center; justify-content: center; font-size: 60px; overflow: hidden; position: relative; }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .product-card:hover .product-img img { transform: scale(1.04); }
+    .badge { position: absolute; top: 15px; left: 15px; background: var(--gold); color: var(--bg); font-size: 10px; padding: 4px 10px; text-transform: uppercase; font-weight: 500; letter-spacing: 0.1em; }
+
+    .product-info { padding: 1.5rem; }
+    .product-brand { font-size: 10px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.5rem; }
+    .product-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; margin-bottom: 0.5rem; }
+    .product-meta { font-size: 12px; color: var(--text-dim); margin-bottom: 1.5rem; opacity: 0.7; }
+    .product-footer { display: flex; justify-content: space-between; align-items: center; }
+    .product-price { font-size: 18px; color: var(--gold); font-weight: 500; }
+    .add-btn { background: none; border: 0.5px solid var(--gold); color: var(--gold); width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); font-size: 18px; }
+    .add-btn:hover { background: var(--gold); color: var(--bg); }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 4rem 2rem; opacity: 0.5; grid-column: 1/-1; }
+
+    /* CART DRAWER */
+    .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; z-index: 200; }
+    .cart-drawer { position: fixed; top: 0; right: -100%; width: 100%; max-width: 450px; height: 100%; background: var(--bg-card); z-index: 201; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
+    .cart-drawer.open { right: 0; }
+    .cart-header { padding: 2rem; border-bottom: 0.5px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .cart-items { flex: 1; padding: 2rem; overflow-y: auto; }
+    .cart-footer { padding: 2rem; background: #1a1815; border-top: 0.5px solid var(--border); }
+    .checkout-btn { width: 100%; padding: 1.2rem; background: var(--gold); color: var(--bg); border: none; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: 'Jost', sans-serif; font-size: 13px; }
+    .checkout-btn:hover { background: var(--gold-light); } /* ✅ FIX: ahora --gold-light existe */
+
+    /* CART ITEM */
+    .cart-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 0.5px solid rgba(255,255,255,0.05); padding-bottom: 1rem; }
+    .cart-item-thumb { width: 60px; height: 75px; background: #1a1714; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; overflow: hidden; }
+    .cart-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .cart-item-qty { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+    .qty-btn { background: none; border: 0.5px solid var(--border); color: var(--gold); width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); font-size: 16px; line-height: 1; }
+    .qty-btn:hover { background: var(--gold); color: var(--bg); }
+
+    /* WHATSAPP */
+    .whatsapp-float { position: fixed; bottom: 2rem; right: 2rem; background: var(--whatsapp); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 150; text-decoration: none; transition: var(--transition); }
+    .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(37,211,102,0.4); }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--gold); color: var(--bg); padding: 12px 24px; font-size: 13px; font-weight: 500; z-index: 500; transition: transform 0.4s; white-space: nowrap; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 768px) {
+      .hero { padding: 3rem 1.5rem 2rem; }
+      .hero h1 { font-size: 36px; }
+      .products { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .section { padding: 0 1rem 3rem; }
+      .filters { gap: 8px; }
+      .filter-btn { padding: 6px 14px; font-size: 10px; }
+    }
+
+    @media (max-width: 400px) {
+      .products { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a href="#" class="logo">Maison <span>Olfactif</span></a>
+    <button class="cart-btn" onclick="UI.toggleCart(true)">
+      <i class="ti ti-shopping-bag"></i>
+      <span id="cart-count">0</span>
+    </button>
+  </header>
+
+  <section class="hero">
+    <p style="font-size: 11px; letter-spacing: 0.5em; color: var(--gold); text-transform: uppercase; margin-bottom: 1.5rem;">Collection Privée 2026</p>
+    <h1>La arquitectura del <em>aroma</em></h1>
+    <div style="width: 80px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 2rem auto;"></div>
+  </section>
+
+  <main class="section">
+    <div class="filters" id="filter-container">
+      <button class="filter-btn active" data-cat="Todos">Todos</button>
+      <button class="filter-btn" data-cat="Femenino">Femenino</button>
+      <button class="filter-btn" data-cat="Masculino">Masculino</button>
+      <button class="filter-btn" data-cat="Unisex">Unisex</button>
+    </div>
+    <div class="products" id="products-grid">
+      <!-- Skeletons mientras carga -->
+      <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-text wide"></div><div class="skeleton-text short"></div></div>
+      <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-text wide"></div><div class="skeleton-text short"></div></div>
+      <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-text wide"></div><div class="skeleton-text short"></div></div>
+    </div>
+  </main>
+
+  <!-- ⚠️ CAMBIA ESTE NÚMERO POR EL TUYO -->
+  <a href="https://wa.me/573143774602" class="whatsapp-float" target="_blank" aria-label="Contactar por WhatsApp">
+    <i class="ti ti-brand-whatsapp"></i>
+  </a>
+
+  <div class="cart-overlay" id="cart-overlay" onclick="UI.toggleCart(false)"></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Carrito de compras">
+    <div class="cart-header">
+      <h2 style="font-family:'Cormorant Garamond'; font-weight:300; font-size:24px;">Tu Selección</h2>
+      <button onclick="UI.toggleCart(false)" style="background:none; border:none; color:var(--text); cursor:pointer; font-size:24px; line-height:1;" aria-label="Cerrar carrito">&times;</button>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer">
+      <div style="display:flex; justify-content:space-between; margin-bottom:1.5rem; align-items:center;">
+        <span style="opacity:0.6; font-size:13px; letter-spacing:0.1em; text-transform:uppercase;">Total Estimado</span>
+        <span id="cart-total" style="color:var(--gold); font-size:22px; font-family:'Cormorant Garamond';">$0</span>
+      </div>
+      <button class="checkout-btn" onclick="App.checkout()">
+        <i class="ti ti-brand-whatsapp" style="margin-right:8px;"></i>Pedir por WhatsApp
+      </button>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="alert"></div>
+
+  <script>
+    // =========================================================
+    // ⚠️  CONFIGURACIÓN — edita solo estas líneas
+    // =========================================================
+    const SHEET_URL   = 'https://script.google.com/macros/s/AKfycbzfnGP2lkqk0F-LgPwt1RFeHXfjOElxFicx0g_QpPAt6ONVnPZ18aW54UhKoYiUst-l/exec';
+    const WHATSAPP_NR = '573143774602'; // Sin + ni espacios
+    // =========================================================
+
+    // ✅ FIX: Convierte cualquier URL de Google Drive al formato thumbnail que sí funciona
+    function fixDriveUrl(url) {
+      if (!url || typeof url !== 'string' || url.trim() === '') return null;
+      const match = url.match(/[?&]id=([\w-]+)/);
+      if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w600`;
+      return url; // Si no es Drive, devuelve igual (p.ej. Imgur, Cloudinary, etc.)
+    }
+
+    const App = {
+      allProducts: [],
+      cart: [],
+
+      async init() {
+        // Carga el carrito guardado
+        try { this.cart = JSON.parse(localStorage.getItem('maison_cart')) || []; } catch(e) { this.cart = []; }
+        UI.updateCart();
+
+        try {
+          // ✅ FIX: redirect:'follow' evita el error con el 302
+          const response = await fetch(SHEET_URL, { redirect: 'follow' });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const raw = await response.json();
+
+          // ✅ FIX: normaliza imagen y convierte precios
+          this.allProducts = raw.map((p, i) => ({
+            id:    Number(p.id) || i + 1,
+            brand: String(p.brand || '').trim(),
+            name:  String(p.name  || '').trim(),
+            vol:   String(p.vol   || '').trim(),
+            price: typeof p.price === 'number' ? p.price : parseInt(String(p.price).replace(/\./g, '')) || 0,
+            cat:   String(p.cat   || '').trim(),
+            badge: String(p.badge || '').trim() || null,
+            image: fixDriveUrl(typeof p.image === 'string' ? p.image.trim() : '')
+          }));
+
+          UI.renderProducts(this.allProducts);
+          this.setupFilters();
+
+        } catch (err) {
+          console.error('Error cargando catálogo:', err);
+          document.getElementById('products-grid').innerHTML =
+            `<div class="empty-state" style="color:var(--text-dim);">
+              <i class="ti ti-alert-circle" style="font-size:40px; display:block; margin-bottom:1rem;"></i>
+              No se pudo cargar el catálogo.<br>
+              <small style="opacity:0.6; margin-top:0.5rem; display:block;">Verifica la URL del script en Google Apps Script.</small>
+            </div>`;
+        }
+      },
+
+      setupFilters() {
+        document.getElementById('filter-container').addEventListener('click', (e) => {
+          const btn = e.target.closest('.filter-btn');
+          if (!btn) return;
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const cat = btn.dataset.cat;
+          UI.renderProducts(cat === 'Todos' ? this.allProducts : this.allProducts.filter(p => p.cat === cat));
+        });
+      },
+
+      addToCart(id) {
+        const p = this.allProducts.find(x => x.id === id);
+        if (!p) return;
+        const item = this.cart.find(x => x.id === id);
+        item ? item.qty++ : this.cart.push({ ...p, qty: 1 });
+        this.save();
+        UI.showToast(`${p.name} añadido`);
+      },
+
+      updateQty(id, delta) {
+        const item = this.cart.find(x => x.id === id);
+        if (!item) return;
+        item.qty += delta;
+        if (item.qty <= 0) this.cart = this.cart.filter(x => x.id !== id);
+        this.save();
+      },
+
+      save() {
+        try { localStorage.setItem('maison_cart', JSON.stringify(this.cart)); } catch(e) {}
+        UI.updateCart();
+      },
+
+      checkout() {
+        if (!this.cart.length) { UI.showToast('Tu selección está vacía'); return; }
+        const total = this.cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+        const msg = 'Hola Maison Olfactif! Quisiera pedir:\n\n'
+          + this.cart.map(i => `• ${i.qty}x ${i.name} (${i.brand}) — $${(i.price * i.qty).toLocaleString('es-CO')}`).join('\n')
+          + `\n\nTotal estimado: $${total.toLocaleString('es-CO')}`;
+        window.open(`https://wa.me/${WHATSAPP_NR}?text=${encodeURIComponent(msg)}`, '_blank');
+      }
+    };
+
+    // =========================================================
+    const UI = {
+
+      // ✅ FIX: imageTag maneja null, objetos y strings correctamente
+      imageTag(src, style = '') {
+        if (src && typeof src === 'string' && src.startsWith('http')) {
+          return `<img src="${src}" alt="" style="${style}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML+='<span style=\\'font-size:40px;\\'>✨</span>';">`;
+        }
+        return '<span style="font-size:50px;">✨</span>';
+      },
+
+      renderProducts(list) {
+        const grid = document.getElementById('products-grid');
+        if (!list.length) {
+          grid.innerHTML = `<div class="empty-state"><i class="ti ti-mood-empty" style="font-size:40px; display:block; margin-bottom:1rem;"></i>Sin productos en esta categoría.</div>`;
+          return;
+        }
+        grid.innerHTML = list.map(p => `
+          <article class="product-card">
+            <div class="product-img">
+              ${this.imageTag(p.image, 'width:100%;height:100%;object-fit:cover;')}
+              ${p.badge ? `<div class="badge">${p.badge}</div>` : ''}
+            </div>
+            <div class="product-info">
+              <div class="product-brand">${p.brand}</div>
+              <h3 class="product-name">${p.name}</h3>
+              <div class="product-meta">${p.vol} ml · ${p.cat}</div>
+              <div class="product-footer">
+                <span class="product-price">$${p.price.toLocaleString('es-CO')}</span>
+                <button class="add-btn" onclick="App.addToCart(${p.id})" aria-label="Añadir ${p.name} al carrito">
+                  <i class="ti ti-plus"></i>
+                </button>
+              </div>
+            </div>
+          </article>
+        `).join('');
+      },
+
+      updateCart() {
+        const count = App.cart.reduce((a, b) => a + b.qty, 0);
+        const total = App.cart.reduce((a, b) => a + (b.price * b.qty), 0);
+
+        document.getElementById('cart-count').innerText = count;
+        document.getElementById('cart-total').innerText = `$${total.toLocaleString('es-CO')}`;
+
+        const container = document.getElementById('cart-items');
+        if (!App.cart.length) {
+          container.innerHTML = `
+            <div style="text-align:center; opacity:0.4; margin-top:3rem;">
+              <i class="ti ti-shopping-bag" style="font-size:48px; display:block; margin-bottom:1rem;"></i>
+              Tu selección está vacía.
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = App.cart.map(i => `
+          <div class="cart-item">
+            <div class="cart-item-thumb">
+              ${UI.imageTag(i.image, 'width:100%;height:100%;object-fit:cover;')}
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:13px; opacity:0.5; letter-spacing:0.2em; text-transform:uppercase;">${i.brand}</div>
+              <div style="font-family:'Cormorant Garamond'; font-size:16px; margin-top:2px;">${i.name}</div>
+              <div class="cart-item-qty">
+                <button class="qty-btn" onclick="App.updateQty(${i.id}, -1)" aria-label="Quitar uno">−</button>
+                <span style="font-size:14px; min-width:16px; text-align:center;">${i.qty}</span>
+                <button class="qty-btn" onclick="App.updateQty(${i.id}, 1)" aria-label="Añadir uno">+</button>
+              </div>
+            </div>
+            <div style="color:var(--gold); font-size:15px; font-family:'Cormorant Garamond'; white-space:nowrap; padding-top:4px;">
+              $${(i.price * i.qty).toLocaleString('es-CO')}
+            </div>
+          </div>
+        `).join('');
+      },
+
+      toggleCart(open) {
+        document.getElementById('cart-drawer').classList.toggle('open', open);
+        document.getElementById('cart-overlay').style.display = open ? 'block' : 'none';
+        document.body.style.overflow = open ? 'hidden' : '';
+      },
+
+      showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+      }
+    };
+
+    App.init();
+  </script>
+</body>
+</html>
